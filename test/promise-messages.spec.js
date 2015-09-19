@@ -1,6 +1,6 @@
 import angular from 'angular';
 import mocks from 'angular-mocks/ngMock';
-import module from '../src/angular-promise-template';
+import module from '../src/promise-messages-module';
 
 describe('PromiseMessagesDirective', () => {
     var $element, $scope;
