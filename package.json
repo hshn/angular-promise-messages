@@ -1,0 +1,21 @@
+{
+  "name": "angular-promise-messages",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "angular",
+    "promise",
+    "message",
+    "template",
+    "button"
+  ],
+  "author": "Shota Hoshino <lga0503@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.4.0"
+  }
+}
