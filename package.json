@@ -5,7 +5,8 @@
   "main": "",
   "scripts": {
     "test": "karma start --single-run",
-    "test:watch": "karma start"
+    "test:watch": "karma start",
+    "build": "browserify src/promise-messages-module.js > dist/angular-promise-message.js"
   },
   "keywords": [
     "angular",
