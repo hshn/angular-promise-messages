@@ -35,7 +35,11 @@
   },
   "browserify": {
     "transform": [
-      "babelify"
+      "babelify",
+      "browserify-shim"
     ]
+  },
+  "browserify-shim": {
+    "angular": "global:angular"
   }
 }
