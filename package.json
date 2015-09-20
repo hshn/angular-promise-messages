@@ -6,7 +6,9 @@
   "scripts": {
     "test": "karma start --single-run",
     "test:watch": "karma start",
-    "build": "browserify src/promise-messages-module.js > dist/angular-promise-message.js"
+    "build": "npm run build:browserify && npm run build:uglify",
+    "build:browserify": "browserify --no-bundle-external -t browserify-shim src/promise-messages-module.js > dist/angular-promise-messages.js",
+    "build:uglify": "uglifyjs dist/angular-promise-messages.js > dist/angular-promise-messages.min.js"
   },
   "keywords": [
     "angular",
@@ -17,6 +19,10 @@
   ],
   "author": "Shota Hoshino <lga0503@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hshn/angular-promise-messages.git"
+  },
   "dependencies": {
     "angular": "^1.4.0"
   },
@@ -31,7 +37,8 @@
     "karma-browserify": "^4.3.0",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",
-    "phantomjs": "^1.9.18"
+    "phantomjs": "^1.9.18",
+    "uglify-js": "^2.4.24"
   },
   "browserify": {
     "transform": [
