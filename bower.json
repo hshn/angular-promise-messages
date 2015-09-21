@@ -1,0 +1,32 @@
+{
+  "name": "angular-promise-messages",
+  "version": "0.2.2",
+  "authors": [
+    "Shota Hoshino <lga0503@gmail.com>"
+  ],
+  "description": "Enhanced support for displaying messages depending on some promise within template for AngularJS.",
+  "main": "dist/angular-promise-messages.js",
+  "keywords": [
+    "angular",
+    "promise",
+    "message",
+    "template",
+    "button"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hshn/angular-promise-messages.git"
+  },
+  "homepage": "https://github.com/hshn/angular-promise-messages",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.4.0"
+  }
+}
