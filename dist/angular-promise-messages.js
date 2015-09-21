@@ -188,6 +188,9 @@ function PromiseMessagesDirective($parse, $q) {
                     });
                 })();
             }
+
+            // initialize view
+            render();
         },
         controller: 'PromiseMessagesController'
     };
