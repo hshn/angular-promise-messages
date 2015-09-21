@@ -12,6 +12,7 @@ const STATES = [
 export class PromiseMessagesController {
     constructor() {
         this.controls = [];
+        this.$state = {};
     }
     addControl (control) {
         this.controls.push(control);
@@ -23,7 +24,7 @@ export class PromiseMessagesController {
         }
     }
     render (state) {
-        this.state = state;
+        this.setState(state);
         this.controls.forEach(control => {
             if (control.test(state)) {
                 control.attach();
@@ -31,6 +32,10 @@ export class PromiseMessagesController {
                 control.detach();
             }
         });
+    }
+    setState (state) {
+        this.$state.name = state;
+        STATES.forEach(state => this.$state[state] = this.$state.name === state);
     }
 }
 

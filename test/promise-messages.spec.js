@@ -21,7 +21,11 @@ describe('PromiseMessagesDirective', () => {
 
     it('should expose controller', () => {
         expect($scope.message).toBeTruthy();
-        expect($scope.message.state).toEqual('none');
+        expect($scope.message.$state.name).toEqual('none');
+        expect($scope.message.$state.none).toEqual(true);
+        expect($scope.message.$state.pending).toEqual(false);
+        expect($scope.message.$state.rejected).toEqual(false);
+        expect($scope.message.$state.fulfilled).toEqual(false);
     });
 
     describe('not watching promise', () => {
