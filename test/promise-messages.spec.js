@@ -8,7 +8,7 @@ describe('PromiseMessagesDirective', () => {
         angular.mock.module(module.name);
         inject(($compile, $rootScope) => {
             $element = $compile(`
-                <promise-messages for="promise" for-action="action()">
+                <promise-messages name="message" for="promise" for-action="action()">
                     <promise-message>default message</promise-message>
                     <promise-message when="pending">pending</promise-message>
                     <promise-message when="rejected">rejected</promise-message>
@@ -17,6 +17,11 @@ describe('PromiseMessagesDirective', () => {
             )($scope = $rootScope.$new());
             $scope.$digest();
         });
+    });
+
+    it('should expose controller', () => {
+        expect($scope.message).toBeTruthy();
+        expect($scope.message.state).toEqual('none');
     });
 
     describe('not watching promise', () => {
