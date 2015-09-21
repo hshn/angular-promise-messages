@@ -1,3 +1,14 @@
+const STATE_NONE        = 'none';
+const STATE_PENDING     = 'pending';
+const STATE_FULFILLED   = 'fulfilled';
+const STATE_REJECTED    = 'rejected';
+const STATES = [
+    STATE_NONE,
+    STATE_PENDING,
+    STATE_FULFILLED,
+    STATE_REJECTED
+];
+
 export class PromiseMessagesController {
     constructor() {
         this.controls = [];
@@ -28,10 +39,10 @@ export function PromiseMessagesDirective ($parse, $q) {
     function renderer (control) {
         return promise => {
             if (promise) {
-                control.render('pending');
-                promise.then(_ => control.render('fulfilled'), _ => control.render('rejected'));
+                control.render(STATE_PENDING);
+                promise.then(_ => control.render(STATE_FULFILLED), _ => control.render(STATE_REJECTED));
             } else {
-                control.render('none');
+                control.render(STATE_NONE);
             }
         }
     }
