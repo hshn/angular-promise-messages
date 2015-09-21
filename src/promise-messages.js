@@ -23,19 +23,23 @@ export class PromiseMessagesController {
 }
 
 export function PromiseMessagesDirective () {
+    function renderer (control) {
+        return promise => {
+            if (promise) {
+                control.render('pending');
+                promise.then(_ => control.render('fulfilled'), _ => control.render('rejected'));
+            } else {
+                control.render('none');
+            }
+        }
+    }
+
     return {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
-            scope.$watch(attr.for, promise => render(promise));
+            let render = renderer(control);
 
-            function render (promise) {
-                if (promise) {
-                    control.render('pending');
-                    promise.then(_ => control.render('fulfilled'), _ => control.render('rejected'));
-                } else {
-                    control.render('none')
-                }
-            }
+            scope.$watch(attr.for, promise => render(promise));
         },
         controller: 'PromiseMessagesController'
     };

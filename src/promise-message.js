@@ -1,24 +1,24 @@
 export default function PromiseMessageDirective () {
+    let guard = (test, next) => test() && next();
+
     return {
         restrict: 'EA',
         transclude: 'element',
         require: '^^promiseMessages',
         link: (scope, element, attr, messages, transclude) => {
             var current;
-            var when = attr.when || 'none';
+            let when = attr.when || 'none';
             let control = {
                 test: state => state === when,
-                attach: () => {
-                    if (current) return;
+                attach: _ => guard(_ => !current, _ => {
                     transclude(scope, cloned => {
                         element.parent().append(current = cloned);
-                    });
-                },
-                detach: () => {
-                    if (!current) return;
+                    })
+                }),
+                detach: _ => guard(_ => current, _ => {
                     current.remove();
                     current = null;
-                }
+                })
             };
 
             messages.addControl(control);
