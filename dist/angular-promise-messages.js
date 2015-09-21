@@ -166,12 +166,12 @@ function PromiseMessagesDirective($parse, $q) {
         restrict: 'EA',
         link: function link(scope, element, attr, control) {
             var render = renderer(control);
-            var name = attr.name || attr.promiseMessages;
+            var state = attr.state;
             var forExpression = attr['for'];
             var forActionExpression = attr.forAction;
 
-            if (name) {
-                ($parse(name).assign || function () {})(scope, control);
+            if (state) {
+                ($parse(state).assign || function () {})(scope, control.$state);
             }
 
             if (forExpression) {
