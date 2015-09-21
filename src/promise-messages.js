@@ -22,19 +22,33 @@ export class PromiseMessagesController {
     }
 }
 
-export function PromiseMessagesDirective () {
+PromiseMessagesDirective.$inject = ['$parse', '$q'];
+export function PromiseMessagesDirective ($parse, $q) {
+    function renderer (control) {
+        return promise => {
+            if (promise) {
+                control.render('pending');
+                promise.then(_ => control.render('fulfilled'), _ => control.render('rejected'));
+            } else {
+                control.render('none');
+            }
+        }
+    }
+
     return {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
-            scope.$watch(attr.for, promise => render(promise));
+            let render = renderer(control);
+            let forExpression = attr.for;
+            let forActionExpression = attr.forAction;
 
-            function render (promise) {
-                if (promise) {
-                    control.render('pending');
-                    promise.then(_ => control.render('fulfilled'), _ => control.render('rejected'));
-                } else {
-                    control.render('none')
-                }
+            if (forExpression) {
+                scope.$watch(forExpression, promise => render(promise));
+            }
+
+            if (forActionExpression) {
+                let action = $parse(forActionExpression);
+                element.on(attr.trigger || 'click', _ => render($q.when(action(scope))));
             }
         },
         controller: 'PromiseMessagesController'
