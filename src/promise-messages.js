@@ -56,12 +56,12 @@ export function PromiseMessagesDirective ($parse, $q) {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
             let render = renderer(control);
-            let name = attr.name || attr.promiseMessages;
+            let state = attr.state;
             let forExpression = attr.for;
             let forActionExpression = attr.forAction;
 
-            if (name) {
-                ($parse(name).assign || (() => {}))(scope, control);
+            if (state) {
+                ($parse(state).assign || (() => {}))(scope, control.$state);
             }
 
             if (forExpression) {
