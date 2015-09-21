@@ -72,6 +72,9 @@ export function PromiseMessagesDirective ($parse, $q) {
                 let action = $parse(forActionExpression);
                 element.on(attr.trigger || 'click', _ => render($q.when(action(scope))));
             }
+
+            // initialize view
+            render();
         },
         controller: 'PromiseMessagesController'
     };
