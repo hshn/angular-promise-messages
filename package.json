@@ -2,7 +2,7 @@
   "name": "angular-promise-messages",
   "version": "0.1.0",
   "description": "",
-  "main": "",
+  "main": "src/promise-messages-module.js",
   "scripts": {
     "test": "karma start --single-run",
     "test:watch": "karma start",
