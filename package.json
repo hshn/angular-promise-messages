@@ -1,11 +1,14 @@
 {
   "name": "angular-promise-messages",
   "version": "0.1.0",
-  "description": "",
-  "main": "",
+  "description": "Enhanced support for displaying messages depending on some promise within template for AngularJS.",
+  "main": "src/promise-messages-module.js",
   "scripts": {
     "test": "karma start --single-run",
-    "test:watch": "karma start"
+    "test:watch": "karma start",
+    "build": "npm run build:browserify && npm run build:uglify",
+    "build:browserify": "browserify --no-bundle-external -t browserify-shim src/promise-messages-module.js > dist/angular-promise-messages.js",
+    "build:uglify": "uglifyjs dist/angular-promise-messages.js > dist/angular-promise-messages.min.js"
   },
   "keywords": [
     "angular",
@@ -16,6 +19,10 @@
   ],
   "author": "Shota Hoshino <lga0503@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hshn/angular-promise-messages.git"
+  },
   "dependencies": {
     "angular": "^1.4.0"
   },
@@ -23,17 +30,23 @@
     "angular-mocks": "^1.4.6",
     "babelify": "^6.3.0",
     "browserify": "^11.1.0",
+    "browserify-shim": "^3.8.10",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
     "karma-babel-preprocessor": "^5.2.2",
     "karma-browserify": "^4.3.0",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",
-    "phantomjs": "^1.9.18"
+    "phantomjs": "^1.9.18",
+    "uglify-js": "^2.4.24"
   },
   "browserify": {
     "transform": [
-      "babelify"
+      "babelify",
+      "browserify-shim"
     ]
+  },
+  "browserify-shim": {
+    "angular": "global:angular"
   }
 }
