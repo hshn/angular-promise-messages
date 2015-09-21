@@ -14,6 +14,12 @@ install via npm
 npm install angular-promise-messages --save
 ```
 
+install via bower
+
+```bash
+bower install angular-promise-messages --save
+```
+
 Add `promiseMessages` as dependency in your module:
 
 ```js
