@@ -22,7 +22,8 @@ export class PromiseMessagesController {
     }
 }
 
-export function PromiseMessagesDirective () {
+PromiseMessagesDirective.$inject = ['$parse', '$q'];
+export function PromiseMessagesDirective ($parse, $q) {
     function renderer (control) {
         return promise => {
             if (promise) {
@@ -38,8 +39,17 @@ export function PromiseMessagesDirective () {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
             let render = renderer(control);
+            let forExpression = attr.for;
+            let forActionExpression = attr.forAction;
 
-            scope.$watch(attr.for, promise => render(promise));
+            if (forExpression) {
+                scope.$watch(forExpression, promise => render(promise));
+            }
+
+            if (forActionExpression) {
+                let action = $parse(forActionExpression);
+                element.on(attr.trigger || 'click', _ => render($q.when(action(scope))));
+            }
         },
         controller: 'PromiseMessagesController'
     };

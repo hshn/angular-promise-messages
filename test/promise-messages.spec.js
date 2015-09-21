@@ -8,7 +8,7 @@ describe('PromiseMessagesDirective', () => {
         angular.mock.module(module.name);
         inject(($compile, $rootScope) => {
             $element = $compile(`
-                <promise-messages for="promise">
+                <promise-messages for="promise" for-action="action()">
                     <promise-message>default message</promise-message>
                     <promise-message when="pending">pending</promise-message>
                     <promise-message when="rejected">rejected</promise-message>
@@ -61,6 +61,49 @@ describe('PromiseMessagesDirective', () => {
             defer.reject();
             $scope.$digest();
 
+            expect($element.text().trim()).toEqual('rejected');
+        });
+    });
+
+    describe('action', () => {
+        var $q;
+        beforeEach(() => {
+            inject(_$q_ => $q = _$q_);
+        });
+
+        it('should display "pending" when action is triggered', () => {
+            var defer = $q.defer();
+
+            $scope.action = jasmine.createSpy('action()');
+            $scope.action.and.returnValue(defer.promise);
+
+            $element.triggerHandler('click');
+            expect($element.text().trim()).toEqual('pending');
+        });
+
+        it('should display "fulfilled" when action is resolved', () => {
+            var defer = $q.defer();
+
+            $scope.action = jasmine.createSpy('action()');
+            $scope.action.and.returnValue(defer.promise);
+
+            $element.triggerHandler('click');
+
+            defer.resolve();
+            $scope.$digest();
+            expect($element.text().trim()).toEqual('fulfilled');
+        });
+
+        it('should display "fulfilled" when action is rejected', () => {
+            var defer = $q.defer();
+
+            $scope.action = jasmine.createSpy('action()');
+            $scope.action.and.returnValue(defer.promise);
+
+            $element.triggerHandler('click');
+
+            defer.reject();
+            $scope.$digest();
             expect($element.text().trim()).toEqual('rejected');
         });
     });
