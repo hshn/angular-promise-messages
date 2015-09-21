@@ -7,6 +7,10 @@ Object.defineProperty(exports, '__esModule', {
 exports['default'] = PromiseMessageDirective;
 
 function PromiseMessageDirective() {
+    var guard = function guard(test, next) {
+        return test() && next();
+    };
+
     return {
         restrict: 'EA',
         transclude: 'element',
@@ -18,16 +22,22 @@ function PromiseMessageDirective() {
                 test: function test(state) {
                     return state === when;
                 },
-                attach: function attach() {
-                    if (current) return;
-                    transclude(scope, function (cloned) {
-                        element.parent().append(current = cloned);
+                attach: function attach(_) {
+                    return guard(function (_) {
+                        return !current;
+                    }, function (_) {
+                        transclude(scope, function (cloned) {
+                            element.parent().append(current = cloned);
+                        });
                     });
                 },
-                detach: function detach() {
-                    if (!current) return;
-                    current.remove();
-                    current = null;
+                detach: function detach(_) {
+                    return guard(function (_) {
+                        return current;
+                    }, function (_) {
+                        current.remove();
+                        current = null;
+                    });
                 }
             };
 
@@ -101,6 +111,7 @@ var PromiseMessagesController = (function () {
     }, {
         key: 'render',
         value: function render(state) {
+            this.state = state;
             this.controls.forEach(function (control) {
                 if (control.test(state)) {
                     control.attach();
@@ -116,25 +127,49 @@ var PromiseMessagesController = (function () {
 
 exports.PromiseMessagesController = PromiseMessagesController;
 
-function PromiseMessagesDirective() {
+PromiseMessagesDirective.$inject = ['$parse', '$q'];
+
+function PromiseMessagesDirective($parse, $q) {
+    function renderer(control) {
+        return function (promise) {
+            if (promise) {
+                control.render('pending');
+                promise.then(function (_) {
+                    return control.render('fulfilled');
+                }, function (_) {
+                    return control.render('rejected');
+                });
+            } else {
+                control.render('none');
+            }
+        };
+    }
+
     return {
         restrict: 'EA',
         link: function link(scope, element, attr, control) {
-            scope.$watch(attr['for'], function (promise) {
-                return render(promise);
-            });
+            var render = renderer(control);
+            var name = attr.name || attr.promiseMessages;
+            var forExpression = attr['for'];
+            var forActionExpression = attr.forAction;
 
-            function render(promise) {
-                if (promise) {
-                    control.render('pending');
-                    promise.then(function (_) {
-                        return control.render('fulfilled');
-                    }, function (_) {
-                        return control.render('rejected');
+            if (name) {
+                ($parse(name).assign || function () {})(scope, control);
+            }
+
+            if (forExpression) {
+                scope.$watch(forExpression, function (promise) {
+                    return render(promise);
+                });
+            }
+
+            if (forActionExpression) {
+                (function () {
+                    var action = $parse(forActionExpression);
+                    element.on(attr.trigger || 'click', function (_) {
+                        return render($q.when(action(scope)));
                     });
-                } else {
-                    control.render('none');
-                }
+                })();
             }
         },
         controller: 'PromiseMessagesController'

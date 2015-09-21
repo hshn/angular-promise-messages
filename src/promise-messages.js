@@ -12,6 +12,7 @@ export class PromiseMessagesController {
         }
     }
     render (state) {
+        this.state = state;
         this.controls.forEach(control => {
             if (control.test(state)) {
                 control.attach();
@@ -39,8 +40,13 @@ export function PromiseMessagesDirective ($parse, $q) {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
             let render = renderer(control);
+            let name = attr.name || attr.promiseMessages;
             let forExpression = attr.for;
             let forActionExpression = attr.forAction;
+
+            if (name) {
+                ($parse(name).assign || (() => {}))(scope, control);
+            }
 
             if (forExpression) {
                 scope.$watch(forExpression, promise => render(promise));
