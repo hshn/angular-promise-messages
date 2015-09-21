@@ -88,11 +88,18 @@ exports.PromiseMessagesDirective = PromiseMessagesDirective;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var STATE_NONE = 'none';
+var STATE_PENDING = 'pending';
+var STATE_FULFILLED = 'fulfilled';
+var STATE_REJECTED = 'rejected';
+var STATES = [STATE_NONE, STATE_PENDING, STATE_FULFILLED, STATE_REJECTED];
+
 var PromiseMessagesController = (function () {
     function PromiseMessagesController() {
         _classCallCheck(this, PromiseMessagesController);
 
         this.controls = [];
+        this.$state = {};
     }
 
     _createClass(PromiseMessagesController, [{
@@ -111,13 +118,23 @@ var PromiseMessagesController = (function () {
     }, {
         key: 'render',
         value: function render(state) {
-            this.state = state;
+            this.setState(state);
             this.controls.forEach(function (control) {
                 if (control.test(state)) {
                     control.attach();
                 } else {
                     control.detach();
                 }
+            });
+        }
+    }, {
+        key: 'setState',
+        value: function setState(state) {
+            var _this = this;
+
+            this.$state.name = state;
+            STATES.forEach(function (state) {
+                return _this.$state[state] = _this.$state.name === state;
             });
         }
     }]);
@@ -133,14 +150,14 @@ function PromiseMessagesDirective($parse, $q) {
     function renderer(control) {
         return function (promise) {
             if (promise) {
-                control.render('pending');
+                control.render(STATE_PENDING);
                 promise.then(function (_) {
-                    return control.render('fulfilled');
+                    return control.render(STATE_FULFILLED);
                 }, function (_) {
-                    return control.render('rejected');
+                    return control.render(STATE_REJECTED);
                 });
             } else {
-                control.render('none');
+                control.render(STATE_NONE);
             }
         };
     }
