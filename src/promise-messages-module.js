@@ -1,6 +1,6 @@
 import angular from 'angular';
-import {PromiseMessagesDirective, PromiseMessagesController} from './promise-messages';
-import PromiseMessageDirective from './promise-message';
+import {PromiseMessagesDirective, PromiseMessagesController} from './directives/promise-messages';
+import {PromiseMessageDirective} from './directives/promise-message';
 import {PromiseMessagesProvider} from './providers/promise-messages';
 
 export default angular

@@ -1,4 +1,4 @@
-export default function PromiseMessageDirective () {
+export function PromiseMessageDirective () {
     let guard = (test, next) => test() && next();
 
     return {
