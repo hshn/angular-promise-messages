@@ -14,7 +14,7 @@ class PromiseMessagesConfig {
 
 export function PromiseMessagesProvider() {
 
-    let autoResetAfter = 2000;
+    let autoResetAfter = -1;
 
     this.disableAutoReset = () => this.setAutoResetAfter(-1);
     this.setAutoResetAfter = ms => autoResetAfter = ms;
