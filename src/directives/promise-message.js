@@ -10,12 +10,12 @@ export function PromiseMessageDirective () {
             let when = attr.when || 'none';
             let control = {
                 test: state => state === when,
-                attach: _ => guard(_ => !current, _ => {
+                attach: () => guard(() => !current, () => {
                     transclude(scope, cloned => {
                         element.parent().append(current = cloned);
                     })
                 }),
-                detach: _ => guard(_ => current, _ => {
+                detach: () => guard(() => current, () => {
                     current.remove();
                     current = null;
                 })

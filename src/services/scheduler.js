@@ -22,9 +22,7 @@ function scheduler ($timeout, fn) {
 
 SchedulerFactory.$inject = ['$timeout'];
 export function SchedulerFactory ($timeout) {
-    return fn => {
-        return scheduler($timeout, fn);
-    }
+    return fn => scheduler($timeout, fn);
 }
 
 
