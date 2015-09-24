@@ -16,7 +16,7 @@ export class PromiseMessagesController {
     }
 
     constructor(config, scheduler) {
-        this.schedule = scheduler(() => this.resetState());
+        this.schedule = scheduler(() => this.render(STATE_NONE));
         this.config = config;
         this.controls = [];
         this.$state = {};
@@ -47,9 +47,6 @@ export class PromiseMessagesController {
         if (state === STATE_FULFILLED || state === STATE_REJECTED) {
             this.tryScheduleResetState();
         }
-    }
-    resetState () {
-        this.setState(STATE_NONE);
     }
     tryScheduleResetState () {
         if (this.config.willAutoReset()) {

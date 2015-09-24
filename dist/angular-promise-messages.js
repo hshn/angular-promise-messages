@@ -84,7 +84,7 @@ var PromiseMessagesController = (function () {
         _classCallCheck(this, PromiseMessagesController);
 
         this.schedule = scheduler(function () {
-            return _this.resetState();
+            return _this.render(STATE_NONE);
         });
         this.config = config;
         this.controls = [];
@@ -129,11 +129,6 @@ var PromiseMessagesController = (function () {
             if (state === STATE_FULFILLED || state === STATE_REJECTED) {
                 this.tryScheduleResetState();
             }
-        }
-    }, {
-        key: 'resetState',
-        value: function resetState() {
-            this.setState(STATE_NONE);
         }
     }, {
         key: 'tryScheduleResetState',
