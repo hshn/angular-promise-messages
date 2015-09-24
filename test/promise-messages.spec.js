@@ -1,5 +1,5 @@
 import angular from 'angular';
-import mocks from 'angular-mocks/ngMock';
+import mocks from '../node_modules/angular-mocks/ngMock';
 import module from '../src/promise-messages-module';
 
 describe('PromiseMessagesDirective', () => {
@@ -28,16 +28,14 @@ describe('PromiseMessagesDirective', () => {
         expect($scope.$state.fulfilled).toEqual(false);
     });
 
-    describe('not watching promise', () => {
-        it('should display default message', () => {
-            expect($element.text().trim()).toEqual('default message');
-        });
-    });
-
-    describe('watching promise', () => {
+    describe('for attribution', () => {
         var $q;
         beforeEach(() => {
             inject(_$q_ => $q = _$q_);
+        });
+
+        it('should display "default message" until promise is set', () => {
+            expect($element.text().trim()).toEqual('default message');
         });
 
         it('should display "pending" while promise is pending', () => {
@@ -74,10 +72,14 @@ describe('PromiseMessagesDirective', () => {
         });
     });
 
-    describe('action', () => {
+    describe('forAction attribution', () => {
         var $q;
         beforeEach(() => {
             inject(_$q_ => $q = _$q_);
+        });
+
+        it('should display "default message" until trigger action', () => {
+            expect($element.text().trim()).toEqual('default message');
         });
 
         it('should display "pending" when action is triggered', () => {

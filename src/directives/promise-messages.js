@@ -10,7 +10,14 @@ const STATES = [
 ];
 
 export class PromiseMessagesController {
-    constructor() {
+    // TODO: fixme
+    static get $inject () {
+        return ['promiseMessages', 'promiseMessagesScheduler'];
+    }
+
+    constructor(config, scheduler) {
+        this.schedule = scheduler(() => this.resetState());
+        this.config = config;
         this.controls = [];
         this.$state = {};
     }
@@ -36,6 +43,21 @@ export class PromiseMessagesController {
     setState (state) {
         this.$state.name = state;
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
+
+        if (state === STATE_FULFILLED || state === STATE_REJECTED) {
+            this.tryScheduleResetState();
+        }
+    }
+    resetState () {
+        this.setState(STATE_NONE);
+    }
+    tryScheduleResetState () {
+        if (this.config.willAutoReset()) {
+            this.scheduleResetState(this.config.getAutoResetAfter());
+        }
+    }
+    scheduleResetState (delay) {
+        this.schedule(delay);
     }
 }
 
