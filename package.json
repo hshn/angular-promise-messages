@@ -42,7 +42,8 @@
   },
   "browserify": {
     "transform": [
-      "babelify"
+      "babelify",
+      "browserify-shim"
     ]
   },
   "browserify-shim": {
