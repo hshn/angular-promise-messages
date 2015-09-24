@@ -207,6 +207,7 @@ function PromiseMessagesDirective($parse, $q) {
 }
 
 },{}],3:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -215,7 +216,7 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _angular = require('angular');
+var _angular = (typeof window !== "undefined" ? window['angular'] : typeof global !== "undefined" ? global['angular'] : null);
 
 var _angular2 = _interopRequireDefault(_angular);
 
@@ -230,7 +231,8 @@ var _servicesScheduler = require('./services/scheduler');
 exports['default'] = _angular2['default'].module('promiseMessages', []).provider('promiseMessages', _providersPromiseMessages.PromiseMessagesProvider).factory('promiseMessagesScheduler', _servicesScheduler.SchedulerFactory).directive('promiseMessages', _directivesPromiseMessages.PromiseMessagesDirective).directive('promiseMessage', _directivesPromiseMessage.PromiseMessageDirective).controller('PromiseMessagesController', _directivesPromiseMessages.PromiseMessagesController);
 module.exports = exports['default'];
 
-},{"./directives/promise-message":1,"./directives/promise-messages":2,"./providers/promise-messages":4,"./services/scheduler":5,"angular":undefined}],4:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./directives/promise-message":1,"./directives/promise-messages":2,"./providers/promise-messages":4,"./services/scheduler":5}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
