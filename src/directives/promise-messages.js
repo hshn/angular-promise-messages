@@ -45,10 +45,10 @@ export class PromiseMessagesController {
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
 
         if (state === STATE_FULFILLED || state === STATE_REJECTED) {
-            this.tryScheduleResetState();
+            this.tryAutoResetState();
         }
     }
-    tryScheduleResetState () {
+    tryAutoResetState () {
         if (this.config.willAutoReset()) {
             this.scheduleResetState(this.config.getAutoResetAfter());
         }
