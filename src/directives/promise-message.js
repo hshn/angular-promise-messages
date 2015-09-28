@@ -6,7 +6,7 @@ export function PromiseMessageDirective () {
         transclude: 'element',
         require: '^^promiseMessages',
         link: (scope, element, attr, messages, transclude) => {
-            var current;
+            let current;
             let when = attr.when || 'none';
             let control = {
                 test: state => state === when,

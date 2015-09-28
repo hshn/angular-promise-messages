@@ -45,10 +45,10 @@ export class PromiseMessagesController {
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
 
         if (state === STATE_FULFILLED || state === STATE_REJECTED) {
-            this.tryScheduleResetState();
+            this.tryAutoResetState();
         }
     }
-    tryScheduleResetState () {
+    tryAutoResetState () {
         if (this.config.willAutoReset()) {
             this.scheduleResetState(this.config.getAutoResetAfter());
         }
@@ -88,8 +88,11 @@ export function PromiseMessagesDirective ($parse, $q) {
             }
 
             if (forActionExpression) {
-                let action = $parse(forActionExpression);
-                element.on(attr.trigger || 'click', _ => render($q.when(action(scope))));
+                let event = attr.trigger || 'click';
+                let handler = () => render($q.when($parse(forActionExpression)(scope)));
+
+                element.on(event, handler);
+                scope.$on('$destroy', () => element.off(event, handler));
             }
 
             // initialize view
