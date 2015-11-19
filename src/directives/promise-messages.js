@@ -15,21 +15,24 @@ export class PromiseMessagesController {
         return ['promiseMessages', 'promiseMessagesScheduler'];
     }
 
-    constructor(config, scheduler) {
+    constructor(configs, scheduler) {
         this.schedule = scheduler(() => this.render(STATE_NONE));
-        this.config = config;
+        this.configs = configs;
         this.controls = [];
         this.$state = {};
     }
+
     addControl (control) {
         this.controls.push(control);
     }
+
     removeControl (control) {
         let index = this.controls.indexOf(control);
         if (index > -1) {
             this.controls = this.controls.splice(index, 1);
         }
     }
+
     render (state) {
         this.setState(state);
         this.controls.forEach(control => {
@@ -40,19 +43,21 @@ export class PromiseMessagesController {
             }
         });
     }
+
     setState (state) {
         this.$state.name = state;
+        this.tryScheduleResetState(state);
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
+    }
 
-        if (state === STATE_FULFILLED || state === STATE_REJECTED) {
-            this.tryAutoResetState();
+    tryScheduleResetState (state) {
+        const config = this.configs.get(state);
+
+        if (config.willAutoReset()) {
+            this.scheduleResetState(config.getAutoResetDelay());
         }
     }
-    tryAutoResetState () {
-        if (this.config.willAutoReset()) {
-            this.scheduleResetState(this.config.getAutoResetAfter());
-        }
-    }
+
     scheduleResetState (delay) {
         this.schedule(delay);
     }

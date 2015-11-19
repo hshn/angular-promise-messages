@@ -2,7 +2,7 @@ import angular from 'angular';
 import mocks from 'angular-mocks';
 import module from '../../src/promise-messages-module';
 
-let bind = angular.bind;
+const bind = angular.bind;
 
 describe('PromiseMessagesController', () => {
     let controller;
@@ -20,6 +20,27 @@ describe('PromiseMessagesController', () => {
     });
 
     describe('setState()', () => {
+        function getConfig () {
+            return jasmine.createSpyObj('config', ['willAutoReset', 'getAutoResetDelay']);
+        }
+
+        function getNonResettingConfig () {
+            const config = getConfig();
+
+            config.willAutoReset.and.returnValue(false)
+
+            return config;
+        }
+
+        function getResettingConfig (delay) {
+            const config = getConfig();
+
+            config.willAutoReset.and.returnValue(true);
+            config.getAutoResetDelay.and.returnValue(delay);
+
+            return config;
+        }
+
         it('should update $state', () => {
             let ctrl = controller();
 
@@ -45,16 +66,19 @@ describe('PromiseMessagesController', () => {
         });
 
         it('should schedule reset if auto resetting is enabled', () => {
-            let config = jasmine.createSpyObj('config', ['willAutoReset', 'getAutoResetAfter']);
-            let scheduler = jasmine.createSpy('scheduler');
-            let schedule = jasmine.createSpy('schedule');
+            const config = jasmine.createSpyObj('config', ['willAutoReset', 'getAutoRestDelay']);
+            const configs = jasmine.createSpyObj('configs', ['get']);
+            const scheduler = jasmine.createSpy('scheduler');
+            const schedule = jasmine.createSpy('schedule');
 
             scheduler.and.returnValue(schedule);
+            configs.get.and.callFake(state => {
+                return state === 'fulfilled' || state === 'rejected'
+                    ? getResettingConfig(3000)
+                    : getNonResettingConfig()
+            });
 
-            let ctrl = controller({promiseMessages: config, promiseMessagesScheduler: scheduler});
-
-            config.willAutoReset.and.returnValue(true);
-            config.getAutoResetAfter.and.returnValue(3000);
+            const ctrl = controller({promiseMessages: configs, promiseMessagesScheduler: scheduler});
 
             ctrl.setState('none');
             expect(schedule).not.toHaveBeenCalled();
@@ -71,16 +95,14 @@ describe('PromiseMessagesController', () => {
         });
 
         it('should not schedule reset if auto resetting is disabled', () => {
-            let config = jasmine.createSpyObj('config', ['willAutoReset', 'getAutoResetAfter']);
-            let scheduler = jasmine.createSpy('scheduler');
-            let schedule = jasmine.createSpy('schedule');
+            const configs = jasmine.createSpyObj('configs', ['get']);
+            const scheduler = jasmine.createSpy('scheduler');
+            const schedule = jasmine.createSpy('schedule');
 
             scheduler.and.returnValue(schedule);
+            configs.get.and.returnValue(getNonResettingConfig());
 
-            let ctrl = controller({promiseMessages: config, promiseMessagesScheduler: scheduler});
-
-            config.willAutoReset.and.returnValue(false);
-            config.getAutoResetAfter.and.returnValue(3000);
+            const ctrl = controller({promiseMessages: configs, promiseMessagesScheduler: scheduler});
 
             ctrl.setState('none');
             expect(schedule).not.toHaveBeenCalled();
