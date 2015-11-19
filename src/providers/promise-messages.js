@@ -56,20 +56,6 @@ class StateConfigRegistry {
     }
 }
 
-class PromiseMessagesConfig {
-    constructor(autoResetAfter) {
-        this.autoResetAfter = autoResetAfter;
-    }
-
-    getAutoResetAfter() {
-        return this.autoResetAfter;
-    }
-
-    willAutoReset() {
-        return this.autoResetAfter >= 0;
-    }
-}
-
 export function PromiseMessagesProvider() {
     let builders = [];
 
