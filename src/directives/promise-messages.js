@@ -27,7 +27,7 @@ export class PromiseMessagesController {
     }
 
     removeControl (control) {
-        let index = this.controls.indexOf(control);
+        const index = this.controls.indexOf(control);
         if (index > -1) {
             this.controls = this.controls.splice(index, 1);
         }
@@ -79,10 +79,10 @@ export function PromiseMessagesDirective ($parse, $q) {
     return {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
-            let render = renderer(control);
-            let state = attr.state;
-            let forExpression = attr.for;
-            let forActionExpression = attr.forAction;
+            const render = renderer(control);
+            const state = attr.state;
+            const forExpression = attr.for;
+            const forActionExpression = attr.forAction;
 
             if (state) {
                 ($parse(state).assign || (() => {}))(scope, control.$state);
@@ -93,8 +93,8 @@ export function PromiseMessagesDirective ($parse, $q) {
             }
 
             if (forActionExpression) {
-                let event = attr.trigger || 'click';
-                let handler = () => render($q.when($parse(forActionExpression)(scope)));
+                const event = attr.trigger || 'click';
+                const handler = () => render($q.when($parse(forActionExpression)(scope)));
 
                 element.on(event, handler);
                 scope.$on('$destroy', () => element.off(event, handler));

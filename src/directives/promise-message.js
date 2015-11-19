@@ -1,5 +1,5 @@
 export function PromiseMessageDirective () {
-    let guard = (test, next) => test() && next();
+    const guard = (test, next) => test() && next();
 
     return {
         restrict: 'EA',
@@ -7,8 +7,8 @@ export function PromiseMessageDirective () {
         require: '^^promiseMessages',
         link: (scope, element, attr, messages, transclude) => {
             let current;
-            let when = attr.when || 'none';
-            let control = {
+            const when = attr.when || 'none';
+            const control = {
                 test: state => state === when,
                 attach: () => guard(() => !current, () => {
                     transclude(scope, cloned => {
