@@ -1,6 +1,6 @@
 # angular-promise-messages
 
-[![Build Status](https://travis-ci.org/hshn/angular-promise-messages.svg)](https://travis-ci.org/hshn/angular-promise-messages)
+[![Build Status](https://travis-ci.org/hshn/angular-promise-messages.svg?branch=master)](https://travis-ci.org/hshn/angular-promise-messages)
 
 The `promiseMessages` module provides enhanced support for displaying messages depending on some promise within templates.
 
@@ -64,7 +64,7 @@ function someAction () {
 
 ## Function support (listening promise that is returned by function)
 
-Use the attribute `forAction` when you want to specify a function that returns promise. 
+Use the attribute `forAction` when you want to specify a function that returns promise.
 
 ```html
 <promise-messages for-action="functionThatReturnsPromise()">
