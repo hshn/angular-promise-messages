@@ -2,17 +2,29 @@ import angular from 'angular';
 import mocks from '../node_modules/angular-mocks/ngMock';
 import module from '../src/promise-messages-module';
 
+function testModule() {
+    return angular.module(`${module.name}.test`, [module.name])
+}
+
 describe('PromiseMessagesDirective', () => {
     var $element, $scope;
     beforeEach(function () {
-        angular.mock.module(module.name);
+
+        const module = testModule().config(promiseMessagesProvider => {
+            promiseMessagesProvider
+                .state('rejected')
+                    .setAutoResetDelay(500)
+                .end()
+        });
+
+        angular.mock.module(module.name)
         inject(($compile, $rootScope) => {
             $element = $compile(`
                 <promise-messages state="$state" for="promise" for-action="action()">
-                    <promise-message>default message</promise-message>
+                    <promise-message>none</promise-message>
                     <promise-message when="pending">pending</promise-message>
                     <promise-message when="rejected">rejected</promise-message>
-                    <promise-message when="fulfilled">fulfilled</promise-message>
+                    <promise-message when="fulfilled" auto-reset-delay="300">fulfilled</promise-message>
                 </promise-messages>`
             )($scope = $rootScope.$new());
             $scope.$digest();
@@ -34,8 +46,8 @@ describe('PromiseMessagesDirective', () => {
             inject(_$q_ => $q = _$q_);
         });
 
-        it('should display "default message" until promise is set', () => {
-            expect($element.text().trim()).toEqual('default message');
+        it('should display "none" until promise is set', () => {
+            expect($element.text().trim()).toEqual('none');
         });
 
         it('should display "pending" while promise is pending', () => {
@@ -78,8 +90,8 @@ describe('PromiseMessagesDirective', () => {
             inject(_$q_ => $q = _$q_);
         });
 
-        it('should display "default message" until trigger action', () => {
-            expect($element.text().trim()).toEqual('default message');
+        it('should display "none" until trigger action', () => {
+            expect($element.text().trim()).toEqual('none');
         });
 
         it('should display "pending" when action is triggered', () => {
@@ -116,6 +128,64 @@ describe('PromiseMessagesDirective', () => {
             defer.reject();
             $scope.$digest();
             expect($element.text().trim()).toEqual('rejected');
+        });
+    });
+
+    describe('auto resetting states', () => {
+        let $timeout, $q;
+        beforeEach(() => {
+            inject((_$timeout_, _$q_) => {
+                $timeout = _$timeout_
+                $q = _$q_
+            })
+        });
+
+        it('should not reset state which has no auto reset delay', () => {
+            var defer = $q.defer();
+
+            $scope.promise = defer.promise;
+            $scope.$digest();
+
+            expect($element.text().trim()).toEqual('pending');
+
+            $timeout.verifyNoPendingTasks();
+            expect($element.text().trim()).toEqual('pending');
+        });
+
+        it('should reset state after 500ms when rejected (global config)', () => {
+            var defer = $q.defer();
+
+            $scope.promise = defer.promise;
+            $scope.$digest();
+
+            defer.reject();
+            $scope.$digest();
+
+            expect($element.text().trim()).toEqual('rejected');
+
+            $timeout.flush(499);
+            expect($element.text().trim()).toEqual('rejected');
+
+            $timeout.flush(1);
+            expect($element.text().trim()).toEqual('none');
+        });
+
+        it('should reset state after 300ms when fulfilled (local config)', () => {
+            var defer = $q.defer();
+
+            $scope.promise = defer.promise;
+            $scope.$digest();
+
+            defer.resolve();
+            $scope.$digest();
+
+            expect($element.text().trim()).toEqual('fulfilled');
+
+            $timeout.flush(299)
+            expect($element.text().trim()).toEqual('fulfilled');
+
+            $timeout.flush(1)
+            expect($element.text().trim()).toEqual('none');
         });
     });
 });

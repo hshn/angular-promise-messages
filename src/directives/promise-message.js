@@ -7,6 +7,10 @@ export function PromiseMessageDirective () {
         require: '^^promiseMessages',
         link: (scope, element, attr, messages, transclude) => {
             let current;
+
+            const configure = attr.autoResetDelay === undefined
+                ? config => config : config => config.override(attr.autoResetDelay)
+
             const when = attr.when || 'none';
             const control = {
                 test: state => state === when,
@@ -18,7 +22,8 @@ export function PromiseMessageDirective () {
                 detach: () => guard(() => current, () => {
                     current.remove();
                     current = null;
-                })
+                }),
+                config: config => configure(config)
             };
 
             messages.addControl(control);

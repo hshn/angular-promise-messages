@@ -33,6 +33,12 @@ export class PromiseMessagesController {
         }
     }
 
+    getConfig (state) {
+        return this.controls.reduce((config, control) => {
+            return control.test(state) ? control.config(config) : config;
+        }, this.configs.get(state));
+    }
+
     render (state) {
         this.setState(state);
         this.controls.forEach(control => {
@@ -46,19 +52,18 @@ export class PromiseMessagesController {
 
     setState (state) {
         this.$state.name = state;
-        this.tryScheduleResetState(state);
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
+
+        this.tryScheduleReset(this.getConfig(state))
     }
 
-    tryScheduleResetState (state) {
-        const config = this.configs.get(state);
-
+    tryScheduleReset (config) {
         if (config.willAutoReset()) {
-            this.scheduleResetState(config.getAutoResetDelay());
+            this.scheduleReset(config.getAutoResetDelay());
         }
     }
 
-    scheduleResetState (delay) {
+    scheduleReset (delay) {
         this.schedule(delay);
     }
 }
