@@ -5,50 +5,62 @@ import module from '../../src/promise-messages-module';
 describe('PromiseMessagesProvider', () => {
 
     function loadModule (configurator) {
-        let testModule = angular.module(`${module.name}.test`, [module.name]).config(['promiseMessagesProvider', configurator || angular.noop]);
+        const testModule = angular.module(`${module.name}.test`, [module.name]).config(['promiseMessagesProvider', configurator || angular.noop]);
+
         angular.mock.module(testModule.name);
     }
 
-    describe('willAutoReset()', () => {
-        it('should be false when disableAutoReset()', () => {
-            loadModule(provider => provider.disableAutoReset());
+    beforeEach(() => {
+        let promiseMessages;
 
-            angular.mock.inject(promiseMessages => {
-                expect(promiseMessages.willAutoReset()).toBe(false);
-            });
+        loadModule(provider => {
+            provider
+                .state('none')
+                    .disableAutoReset()
+                .end()
+                .state('fulfilled')
+                    .setAutoResetDelay(200)
+                .end()
         });
 
-        it('should be false when passing negative value to setAutoResetAfter()', () => {
-            loadModule(provider => provider.setAutoResetAfter(-1));
+        angular.mock.inject(_promiseMessages_ => promiseMessages = _promiseMessages_)
 
-            angular.mock.inject(promiseMessages => {
-                expect(promiseMessages.willAutoReset()).toBe(false);
-            });
-        });
-    });
 
-    describe('getAutoResetAfter()', () => {
-        it('should return 2000 as default value', () => {
-            loadModule();
-            angular.mock.module(promiseMessages => {
-                expect(promiseMessages.getAutoResetAfter()).toEqual(2000);
-            });
+        it('state "none" should be configured correctly', () => {
+            const none = promiseMessages.get('none')
+
+            expect(none).toBeTruthy();
+            expect(none.willAutoReset()).toBe(false);
         });
 
-        it('should return passed value', () => {
-            loadModule(provider => provider.setAutoResetAfter(999));
+        it('state "pending" should be configured correctory', () => {
+            const pending = promiseMessages.get('pending');
 
-            angular.mock.inject(promiseMessages => {
-                expect(promiseMessages.getAutoResetAfter()).toEqual(999);
-            });
+            expect(pending).toBeTruthy();
+            expect(pending.willAutoReset()).toBe(false);
         });
 
-        it('should return -1 when disableAutoReset()', () => {
-            loadModule(provider => provider.disableAutoReset());
+        it('state "rejected" should be configured correctory', () => {
+            const rejected = promiseMessages.get('rejected');
 
-            angular.mock.inject(promiseMessages => {
-                expect(promiseMessages.getAutoResetAfter()).toEqual(-1);
-            });
+            expect(rejected).toBeTruthy();
+            expect(rejected.willAutoReset()).toBe(false);
         });
+
+        it('state "fulfilled" should be configured correctory', () => {
+            const fulfilled = promiseMessages.get('fulfilled');
+
+            expect(fulfilled).toBeTruthy();
+            expect(fulfilled.willAutoReset()).toBe(true);
+            expect(fulfilled.getAutoResetDelay()).toEqual(200);
+        });
+
+        it('state config should be overridden', () => {
+            const fulfilled = promiseMessages.get('fulfilled')
+
+            expect(fulfilled.getAutoResetDelay()).toEqual(200);
+            expect(fullfiled.override(500).getAutoResetDelay()).toEqual(500);
+            expect(fulfilled.getAutoResetDelay()).toEqual(200);
+        })
     });
 });

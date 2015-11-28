@@ -15,21 +15,30 @@ export class PromiseMessagesController {
         return ['promiseMessages', 'promiseMessagesScheduler'];
     }
 
-    constructor(config, scheduler) {
+    constructor(configs, scheduler) {
         this.schedule = scheduler(() => this.render(STATE_NONE));
-        this.config = config;
+        this.configs = configs;
         this.controls = [];
         this.$state = {};
     }
+
     addControl (control) {
         this.controls.push(control);
     }
+
     removeControl (control) {
-        let index = this.controls.indexOf(control);
+        const index = this.controls.indexOf(control);
         if (index > -1) {
             this.controls = this.controls.splice(index, 1);
         }
     }
+
+    getConfig (state) {
+        return this.controls.reduce((config, control) => {
+            return control.test(state) ? control.config(config) : config;
+        }, this.configs.get(state));
+    }
+
     render (state) {
         this.setState(state);
         this.controls.forEach(control => {
@@ -40,20 +49,21 @@ export class PromiseMessagesController {
             }
         });
     }
+
     setState (state) {
         this.$state.name = state;
         STATES.forEach(state => this.$state[state] = this.$state.name === state);
 
-        if (state === STATE_FULFILLED || state === STATE_REJECTED) {
-            this.tryAutoResetState();
+        this.tryScheduleReset(this.getConfig(state))
+    }
+
+    tryScheduleReset (config) {
+        if (config.willAutoReset()) {
+            this.scheduleReset(config.getAutoResetDelay());
         }
     }
-    tryAutoResetState () {
-        if (this.config.willAutoReset()) {
-            this.scheduleResetState(this.config.getAutoResetAfter());
-        }
-    }
-    scheduleResetState (delay) {
+
+    scheduleReset (delay) {
         this.schedule(delay);
     }
 }
@@ -74,10 +84,10 @@ export function PromiseMessagesDirective ($parse, $q) {
     return {
         restrict: 'EA',
         link: (scope, element, attr, control) => {
-            let render = renderer(control);
-            let state = attr.state;
-            let forExpression = attr.for;
-            let forActionExpression = attr.forAction;
+            const render = renderer(control);
+            const state = attr.state;
+            const forExpression = attr.for;
+            const forActionExpression = attr.forAction;
 
             if (state) {
                 ($parse(state).assign || (() => {}))(scope, control.$state);
@@ -88,8 +98,8 @@ export function PromiseMessagesDirective ($parse, $q) {
             }
 
             if (forActionExpression) {
-                let event = attr.trigger || 'click';
-                let handler = () => render($q.when($parse(forActionExpression)(scope)));
+                const event = attr.trigger || 'click';
+                const handler = () => render($q.when($parse(forActionExpression)(scope)));
 
                 element.on(event, handler);
                 scope.$on('$destroy', () => element.off(event, handler));
