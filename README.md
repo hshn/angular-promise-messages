@@ -39,7 +39,9 @@ angular.module('yourModule', [
 
 # Usage
 
-## Basic usage (listening promise)
+## Basic usage
+
+Use the attribute `for` to pass a promise to a directive. Then the directive starts watching the promise.
 
 ```html
 <promise-messages for="promise">
@@ -62,9 +64,9 @@ function someAction () {
 }
 ```
 
-## Function support (listening promise that is returned by function)
+## Function support
 
-Use the attribute `forAction` when you want to specify a function that returns promise.
+Use the attribute `forAction` when you want to pass a promise which will be returned by a function.
 
 ```html
 <promise-messages for-action="functionThatReturnsPromise()">
@@ -99,10 +101,48 @@ Then, you can theme it as you want by using published states.
 </promise-messages>
 ```
 
+## Auto resetting state
+
+Resetting a promise state automatically when the state is changed by configuring delays until reset.
+
+It is useful if want to reset a message when a promise state was changed (such as rejected).
+
+### Configure globally
+
+```js
+.config(function (promiseMessagesProvider) {
+    promiseMessagesProvider
+        // will reset state after 3000ms when fulfilled
+        .state('fulfilled')
+            .setAutoResetDelay(3000)
+        .end()
+        // will reset state after 500ms when rejected
+        .state('rejected')
+            .setAutoResetDelay(500)
+        .end()
+})
+```
+
+### Overriding global configurations
+
+- `disableAutoReset`: Disable auto resetting
+- `autoResetDelay`: Override auto resetting delay
+
+```html
+<promise-messages for="promise">
+    <promise-message>Default</promise-message>
+    <promise-message when="pending">Pending</promise-message>
+    <!-- Disable auto resetting -->
+    <promise-message when="fulfilled" disable-auto-reset>Fulfilled</promise-message>
+    <!-- Override auto resetting delay -->
+    <promise-message when="rejected" auto-reset-delay="1500">Rejected</promise-message>
+</promise-messages>
+```
+
 # Contribution
 
 1. Fork it!
-1. Create your feature branch: git checkout -b my-new-feature
-1. Commit your changes: git commit -am 'Add some feature'
-1. Push to the branch: git push origin my-new-feature
+1. Create your feature branch: `git checkout -b my-new-feature`
+1. Commit your changes: `git commit -am 'Add some feature'`
+1. Push to the branch: `git push origin my-new-feature`
 1. Submit a pull request :D
