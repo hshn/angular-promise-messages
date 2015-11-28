@@ -15,6 +15,9 @@ describe('PromiseMessagesDirective', () => {
                 .state('rejected')
                     .setAutoResetDelay(500)
                 .end()
+                .state('pending')
+                    .setAutoResetDelay(1000)
+                .end()
         });
 
         angular.mock.module(module.name)
@@ -22,7 +25,7 @@ describe('PromiseMessagesDirective', () => {
             $element = $compile(`
                 <promise-messages state="$state" for="promise" for-action="action()">
                     <promise-message>none</promise-message>
-                    <promise-message when="pending">pending</promise-message>
+                    <promise-message when="pending" disable-auto-reset>pending</promise-message>
                     <promise-message when="rejected">rejected</promise-message>
                     <promise-message when="fulfilled" auto-reset-delay="300">fulfilled</promise-message>
                 </promise-messages>`
@@ -131,7 +134,7 @@ describe('PromiseMessagesDirective', () => {
         });
     });
 
-    describe('auto resetting states', () => {
+    describe('auto state resetting', () => {
         let $timeout, $q;
         beforeEach(() => {
             inject((_$timeout_, _$q_) => {
@@ -141,15 +144,11 @@ describe('PromiseMessagesDirective', () => {
         });
 
         it('should not reset state which has no auto reset delay', () => {
-            var defer = $q.defer();
-
-            $scope.promise = defer.promise;
             $scope.$digest();
 
-            expect($element.text().trim()).toEqual('pending');
+            expect($element.text().trim()).toEqual('none');
 
             $timeout.verifyNoPendingTasks();
-            expect($element.text().trim()).toEqual('pending');
         });
 
         it('should reset state after 500ms when rejected (global config)', () => {
@@ -186,6 +185,17 @@ describe('PromiseMessagesDirective', () => {
 
             $timeout.flush(1)
             expect($element.text().trim()).toEqual('none');
+        });
+
+        it('should not reset state when pending if disabled (local config)', () => {
+            var defer = $q.defer();
+
+            $scope.promise = defer.promise;
+            $scope.$digest();
+
+            expect($element.text().trim()).toEqual('pending');
+
+            $timeout.verifyNoPendingTasks();
         });
     });
 });
