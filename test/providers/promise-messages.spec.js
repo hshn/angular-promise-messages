@@ -54,5 +54,13 @@ describe('PromiseMessagesProvider', () => {
             expect(fulfilled.willAutoReset()).toBe(true);
             expect(fulfilled.getAutoResetDelay()).toEqual(200);
         });
+
+        it('state config should be overridden', () => {
+            const fulfilled = promiseMessages.get('fulfilled')
+
+            expect(fulfilled.getAutoResetDelay()).toEqual(200);
+            expect(fullfiled.override(500).getAutoResetDelay()).toEqual(500);
+            expect(fulfilled.getAutoResetDelay()).toEqual(200);
+        })
     });
 });

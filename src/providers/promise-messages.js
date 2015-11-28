@@ -40,6 +40,10 @@ class StateConfig {
     willAutoReset () {
         return this.getAutoResetDelay() >= 0;
     }
+
+    override (autoResetDelay) {
+        return new StateConfig(this.state, autoResetDelay);
+    }
 }
 
 class StateConfigRegistry {
