@@ -132,6 +132,21 @@ describe('PromiseMessagesDirective', () => {
             $scope.$digest();
             expect($element.text().trim()).toEqual('rejected');
         });
+
+        it('should digest scope after trigger the action', () => {
+            var defer = $q.defer();
+
+            $scope.action = () => {
+                $scope.test = 'test'
+                return defer.promise;
+            }
+
+            var watchHandler = jasmine.createSpy('watchHandler')
+            $scope.$watch('calls', watchHandler)
+
+            $element.triggerHandler('click');
+            expect(watchHandler).toHaveBeenCalled()
+        });
     });
 
     describe('auto state resetting', () => {
