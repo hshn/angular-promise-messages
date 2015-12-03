@@ -215,7 +215,8 @@ function PromiseMessagesDirective($parse, $q) {
                 (function () {
                     var event = attr.trigger || 'click';
                     var handler = function handler() {
-                        return render($q.when($parse(forActionExpression)(scope)));
+                        render($q.when($parse(forActionExpression)(scope)));
+                        scope.$apply();
                     };
 
                     element.on(event, handler);

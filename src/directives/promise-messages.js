@@ -99,7 +99,10 @@ export function PromiseMessagesDirective ($parse, $q) {
 
             if (forActionExpression) {
                 const event = attr.trigger || 'click';
-                const handler = () => render($q.when($parse(forActionExpression)(scope)));
+                const handler = () => {
+                    render($q.when($parse(forActionExpression)(scope)))
+                    scope.$apply()
+                }
 
                 element.on(event, handler);
                 scope.$on('$destroy', () => element.off(event, handler));
