@@ -87,13 +87,13 @@ function functionThatReturnsPromise () {
 
 ## Theming
 
-If the `states` attribute is specified, states will be published into related scope.
+If the `state` attribute is specified, current state will be published into related scope.
 
 Then, you can theme it as you want by using published states.
 
 ```html
-<promise-messages for="promise" states="states" ng-disabled="states.pending"
-                  ng-class="{'btn-default': states.none || states.pending, 'btn-danger': states.rejected, 'btn-success': states.resolved}">
+<promise-messages for="promise" state="$state" ng-disabled="$state.pending"
+                  ng-class="{'btn-default': $state.none || $state.pending, 'btn-danger': $state.rejected, 'btn-success': $state.resolved}">
     <promise-message>Default</promise-message>
     <promise-message when="pending">Pending</promise-message>
     <promise-message when="fulfilled">Fulfilled</promise-message>
