@@ -4,7 +4,7 @@
 
 The `promiseMessages` module provides enhanced support for displaying messages depending on some promise within templates.
 
-- [Demo](http://plnkr.co/edit/FS9kLOJLKxMpXdYLdupS?p=preview)
+- [Demo](http://plnkr.co/edit/mqpcVFfzykHF5QN6sOLa?p=preview)
 
 # Installation
 
