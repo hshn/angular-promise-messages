@@ -23,7 +23,13 @@ export class States {
   }
 }
 
-export type CurrentStates = { name?: State} & {[state: string]: boolean}
+export interface CurrentStates {
+  name?: State
+  none?: boolean
+  pending?: boolean
+  fulfilled?: boolean
+  rejected?: boolean
+}
 
 export interface MessageController {
   test(state: State): boolean
