@@ -1,5 +1,15 @@
+import * as angular from 'angular';
+
 import { Scheduler, Schedule } from '../services/scheduler';
 import { StateConfigRegistry, StateConfig } from '../providers/promise-messages';
+
+import IQService = angular.IQService;
+import IParseService = angular.IParseService;
+import IAttributes = angular.IAttributes;
+import IAugmentedJQuery = angular.IAugmentedJQuery;
+import IDirective = angular.IDirective;
+import IPromise = angular.IPromise;
+import IScope = angular.IScope;
 
 export type State = 'none' | 'pending' | 'fulfilled' | 'rejected'
 export class States {
@@ -13,12 +23,9 @@ export class States {
   }
 }
 
-interface CurrentStates {
-  name?: State
-  [state: string]: boolean
-}
+export type CurrentStates = { name?: State} & {[state: string]: boolean}
 
-interface MessageController {
+export interface MessageController {
   test(state: State): boolean
   attach(): void
   detach(): void
@@ -80,4 +87,58 @@ export class PromiseMessagesController {
   scheduleReset(delay: number) {
     this.schedule(delay);
   }
+}
+
+PromiseMessagesDirective.$inject = ['$parse', '$q'];
+export function PromiseMessagesDirective($parse: IParseService, $q: IQService): IDirective {
+  function renderer(control): (promise?: IPromise<any>) => void {
+    return promise => {
+      if (promise) {
+        control.render(States.Pending);
+        promise.then(_ => control.render(States.Fulfilled), _ => control.render(States.Rejected));
+      } else {
+        control.render(States.None);
+      }
+    }
+  }
+
+  return {
+    restrict: 'EA',
+    link: (scope: IScope, element: IAugmentedJQuery, attr: Attributes, control) => {
+      const render = renderer(control);
+      const state = attr.state;
+      const forExpression = attr.for;
+      const forActionExpression = attr.forAction;
+
+      if (state) {
+        ($parse(state).assign || (() => {}))(scope, control.$state);
+      }
+
+      if (forExpression) {
+        scope.$watch<angular.IPromise<any>>(forExpression, promise => render(promise));
+      }
+
+      if (forActionExpression) {
+        const event = attr.trigger || 'click';
+        const handler = () => {
+          render($q.when($parse(forActionExpression)(scope)))
+          scope.$apply()
+        };
+
+        element.on(event, handler);
+        scope.$on('$destroy', () => element.off(event, handler));
+      }
+
+      // initialize view
+      render();
+    },
+    controller: 'PromiseMessagesController'
+  };
+}
+
+interface Attributes extends IAttributes {
+  state?: string
+  for?: string
+  forAction?: string
+  trigger?: string
 }
