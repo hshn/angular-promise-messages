@@ -1,7 +1,8 @@
 import * as angular from 'angular';
 import 'angular-mocks/ngMock';
 import { promiseMessagesModule } from '../module';
-import { PromiseMessagesProvider, StateConfigRegistry } from './promise-messages';
+import { PromiseMessagesProvider } from './promise-messages';
+import { StateConfigRegistry } from '../config/registry';
 
 describe('PromiseMessagesProvider', () => {
   function loadModule(configurator: (config: PromiseMessagesProvider) => void) {

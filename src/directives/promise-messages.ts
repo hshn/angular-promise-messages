@@ -1,7 +1,9 @@
 import * as angular from 'angular';
-
-import { Scheduler, Schedule } from '../services/scheduler';
-import { StateConfigRegistry, StateConfig } from '../providers/promise-messages';
+import { State, States } from '../state';
+import { Schedule } from '../scheduler';
+import { Scheduler } from '../services/scheduler';
+import { StateConfig } from '../config/config';
+import { StateConfigRegistry } from '../config/registry';
 
 import IQService = angular.IQService;
 import IParseService = angular.IParseService;
@@ -10,18 +12,6 @@ import IAugmentedJQuery = angular.IAugmentedJQuery;
 import IDirective = angular.IDirective;
 import IPromise = angular.IPromise;
 import IScope = angular.IScope;
-
-export type State = 'none' | 'pending' | 'fulfilled' | 'rejected'
-export class States {
-  static None: State = 'none';
-  static Pending: State = 'pending';
-  static Fulfilled: State = 'fulfilled';
-  static Rejected: State = 'rejected';
-
-  static forEach(fn: (state: State) => void): void {
-    [States.None, States.Pending, States.Fulfilled, States.Rejected].forEach(fn);
-  }
-}
 
 export interface CurrentStates {
   name?: State

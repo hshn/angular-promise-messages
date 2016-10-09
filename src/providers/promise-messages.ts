@@ -1,4 +1,9 @@
-import { State } from '../directives/promise-messages';
+import * as angular from 'angular';
+
+import { State } from '../state';
+import { StateConfig, StateConfigRegistry } from '../config';
+
+import IServiceProvider = angular.IServiceProvider;
 
 export class StateConfigBuilder {
   private autoResetDelay?: number;
@@ -24,43 +29,11 @@ export class StateConfigBuilder {
   }
 }
 
-export class StateConfig {
-  constructor(private state: State, private autoResetDelay: number = -1) {
-  }
-
-  getState(): State {
-    return this.state;
-  }
-
-  getAutoResetDelay(): number {
-    return this.autoResetDelay;
-  }
-
-  willAutoReset(): boolean {
-    return this.getAutoResetDelay() >= 0;
-  }
-
-  override(autoResetDelay: number): StateConfig {
-    return new StateConfig(this.state, autoResetDelay);
-  }
+export interface PromiseMessagesProvider {
+  state(state: State): StateConfigBuilder
 }
 
-export class StateConfigRegistry {
-
-  private configs: {[state: string]: StateConfig} = {};
-
-  add(config: StateConfig): StateConfigRegistry {
-    this.configs[config.getState()] = config;
-
-    return this;
-  }
-
-  get(state): StateConfig {
-    return this.configs[state] || (this.configs[state] = new StateConfig(state))
-  }
-}
-
-export class PromiseMessagesProvider {
+export class PromiseMessagesProviderImpl implements PromiseMessagesProvider, IServiceProvider {
   private builders: StateConfigBuilder[] = [];
 
   state(state: State): StateConfigBuilder {

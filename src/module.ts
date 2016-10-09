@@ -1,12 +1,12 @@
 import * as angular from 'angular';
 import { SchedulerFactory } from './services/scheduler';
-import { PromiseMessagesProvider } from './providers/promise-messages';
+import { PromiseMessagesProviderImpl } from './providers/promise-messages';
 import { PromiseMessagesController, PromiseMessagesDirective } from './directives/promise-messages';
 import { PromiseMessageDirective } from './directives/promise-message';
 
 export let promiseMessagesModule = angular
   .module('promiseMessages', [])
-  .provider('promiseMessages', PromiseMessagesProvider)
+  .provider('promiseMessages', PromiseMessagesProviderImpl)
   .factory('promiseMessagesScheduler', SchedulerFactory)
   .directive('promiseMessages', PromiseMessagesDirective)
   .directive('promiseMessage', PromiseMessageDirective)

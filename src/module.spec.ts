@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 import 'angular-mocks/ngMock';
-import { promiseMessagesModule } from './module';
-import { CurrentStates } from './directives/promise-messages';
+import promiseMessagesModule, { PromiseMessagesProvider, CurrentStates } from './'
 
 import IAugmentedJQuery = angular.IAugmentedJQuery;
 import IScope = angular.IScope;
@@ -9,6 +8,7 @@ import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import ITimeoutService = angular.ITimeoutService;
 import Spy = jasmine.Spy;
+;
 
 function testModule() {
   return angular.module(`${promiseMessagesModule.name}.test`, [promiseMessagesModule.name])
@@ -26,7 +26,7 @@ describe('PromiseMessagesDirective', () => {
 
   beforeEach(function () {
     const module = testModule()
-      .config(promiseMessagesProvider => {
+      .config((promiseMessagesProvider: PromiseMessagesProvider) => {
         promiseMessagesProvider
           .state('rejected')
           .setAutoResetDelay(500)
