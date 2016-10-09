@@ -7,11 +7,15 @@
   "scripts": {
     "test": "karma start --single-run",
     "test:watch": "karma start",
-    "prebuild": "rimraf lib/",
+    "clean": "rimraf lib/ dist/",
+    "prebuild": "npm run clean",
     "build": "npm run build:transpile && npm run build:browserify && npm run build:uglify",
     "build:transpile": "tsc -p tsconfig.json",
+    "prebuild:browserify": "mkdir dist/",
     "build:browserify": "browserify --no-bundle-external -t browserify-shim lib/index.js > dist/angular-promise-messages.js",
-    "build:uglify": "uglifyjs dist/angular-promise-messages.js > dist/angular-promise-messages.min.js"
+    "build:uglify": "uglifyjs dist/angular-promise-messages.js > dist/angular-promise-messages.min.js",
+    "preversion": "npm test",
+    "version": "npm run build"
   },
   "keywords": [
     "angular",
@@ -49,6 +53,7 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.0",
+    "mkdir": "0.0.2",
     "phantomjs": "^1.9.18",
     "rimraf": "^2.5.4",
     "ts-loader": "^0.9.0",
@@ -56,6 +61,11 @@
     "uglify-js": "^2.4.24",
     "webpack": "^1.13.2"
   },
+  "files": [
+    "dist/",
+    "lib/",
+    "README.md"
+  ],
   "browserify": {
     "transform": [
       "babelify",
