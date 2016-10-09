@@ -5,7 +5,13 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "types": [
+      "angular",
+      "angular-mocks",
+      "jasmine",
+      "jquery"
+    ]
   },
   "exclude": [
     "node_modules/",

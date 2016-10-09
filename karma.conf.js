@@ -26,6 +26,7 @@ module.exports = function (config) {
     },
     webpack: require('./webpack.conf.js'),
     webpackMiddleware: {
+      states: 'errors-only'
     },
 
     // test results reporter to use
