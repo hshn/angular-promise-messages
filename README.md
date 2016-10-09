@@ -1,6 +1,6 @@
 # angular-promise-messages
 
-[![Build Status](https://travis-ci.org/hshn/angular-promise-messages.svg?branch=master)](https://travis-ci.org/hshn/angular-promise-messages) [![Dependency Status](https://david-dm.org/hshn/angular-promise-messages.svg)](https://david-dm.org/hshn/angular-promise-messages)
+[![Build Status](https://travis-ci.org/hshn/angular-promise-messages.svg?branch=master)](https://travis-ci.org/hshn/angular-promise-messages) [![Dependency Status](https://david-dm.org/hshn/angular-promise-messages.svg)](https://david-dm.org/hshn/angular-promise-messages)[![npm version](https://badge.fury.io/js/angular-promise-messages.svg)](https://badge.fury.io/js/angular-promise-messages)
 
 The `promiseMessages` module provides enhanced support for displaying messages depending on some promise within templates.
 
