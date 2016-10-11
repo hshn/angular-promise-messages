@@ -1,6 +1,6 @@
 {
   "name": "angular-promise-messages",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Enhanced support for displaying messages depending on some promise within template for AngularJS.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
