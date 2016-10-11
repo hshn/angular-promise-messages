@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "description": "Enhanced support for displaying messages depending on some promise within template for AngularJS.",
   "main": "lib/index.js",
-  "typings": "lib/index.ts",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "test": "karma start --single-run",
     "test:watch": "karma start",
